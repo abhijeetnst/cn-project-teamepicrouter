@@ -1,0 +1,89 @@
+## C – Packet capture (node-4)
+
+Raw summary (open `evidence/form/client-dns-tcp-tls.pcap` in Wireshark for screenshots;
+for decrypted HTTP set Preferences → Protocols → TLS → key log file = `evidence/form/tls-keys.log`):
+
+```
+ubuntu@node-4:~$ sudo cn-capture
+== request 1: TLS 1.2 + HTTP/1.1   (certificate travels in clear text)
+   HTTP 200   172.31.250.14:38748 -> 172.31.250.12:443   http/1.1
+== request 2: TLS 1.3 + HTTP/2     (certificate is encrypted)
+   HTTP 200   172.31.250.14:38762 -> 172.31.250.12:443   http/2
+
+== 1. DNS  (client ephemeral port -> DNS server port 53/udp)
+   172.31.250.14:58961 -> 172.31.250.11:53   A app.teamepicrouter.test  (query)
+   172.31.250.14:58961 -> 172.31.250.11:53   A app.teamepicrouter.test  (query)
+   172.31.250.11:53 -> 172.31.250.14:58961   A app.teamepicrouter.test  answer=172.31.250.12  TTL=30
+   172.31.250.11:53 -> 172.31.250.14:58961   A app.teamepicrouter.test  (query)
+
+== 2. TCP three-way handshake  (relative seq/ack)
+   172.31.250.14:38748 -> 172.31.250.12:443  ··········S·  seq=0 ack=0
+   172.31.250.12:443 -> 172.31.250.14:38748  ·······A··S·  seq=0 ack=1
+   172.31.250.14:38748 -> 172.31.250.12:443  ·······A····  seq=1 ack=1
+   172.31.250.14:38762 -> 172.31.250.12:443  ··········S·  seq=0 ack=0
+   172.31.250.12:443 -> 172.31.250.14:38762  ·······A··S·  seq=0 ack=1
+   172.31.250.14:38762 -> 172.31.250.12:443  ·······A····  seq=1 ack=1
+
+== 3. TLS handshake  (request 1 = TLS 1.2, request 2 = TLS 1.3)
+172.31.250.14 → 172.31.250.12 TLSv1 288 Client Hello (SNI=app.teamepicrouter.test)
+172.31.250.12 → 172.31.250.14 TLSv1.2 1377 Server Hello, Certificate, Server Key Exchange, Server Hello Done
+172.31.250.14 → 172.31.250.12 TLSv1.2 159 Client Key Exchange, Change Cipher Spec, Encrypted Handshake Messa
+172.31.250.12 → 172.31.250.14 TLSv1.2 117 Change Cipher Spec, Encrypted Handshake Message
+172.31.250.14 → 172.31.250.12 TLSv1 583 Client Hello (SNI=app.teamepicrouter.test)
+172.31.250.12 → 172.31.250.14 TLSv1.3 1500 Server Hello, Change Cipher Spec, Application Data, Application D
+172.31.250.14 → 172.31.250.12 TLSv1.3 146 Change Cipher Spec, Application Data
+
+== 3b. Details: ClientHello offers / ServerHello chooses / certificate
+   ClientHello: Cipher Suites (28 suites)
+      offered Cipher Suite: TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 (0xc02c)
+      offered Cipher Suite: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (0xc030)
+      offered Cipher Suite: TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (0x009f)
+      offered Cipher Suite: TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 (0xcca9)
+      Supported Version: TLS 1.2 (0x0303)
+      Supported Version: TLS 1.3 (0x0304)
+   ServerHello chose: Cipher Suite: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (0xc030)
+   ServerHello chose: Cipher Suite: TLS_AES_256_GCM_SHA384 (0x1302)
+   Certificate: rdnSequence: 1 item (id-at-commonName=teamepicrouter Private CA)
+   Certificate: rdnSequence: 1 item (id-at-commonName=app.teamepicrouter.test)
+   Certificate: dNSName: app.teamepicrouter.test
+
+== 4. Application data is encrypted: 12 'Application Data' records
+
+== 5. Same capture DECRYPTED with the key log -> the HTTP inside TLS
+172.31.250.14 → 172.31.250.12 HTTP 182 GET /api/status HTTP/1.1 
+172.31.250.12 → 172.31.250.14 HTTP/JSON 494 HTTP/1.1 200 OK , JSON (application/json)
+172.31.250.14 → 172.31.250.12 HTTP2 136 HEADERS[1]: GET /api/status
+172.31.250.12 → 172.31.250.14 HTTP2/JSON 382 HEADERS[1]: 200 OK, DATA[1], JSON (application/json)
+
+saved: /tmp/cn-client.pcap  /tmp/cn-keys.log
+```
+
+### C1 – DNS (filter: `dns`) – Draft
+
+Filter `dns`. **Query:** "Standard query A app.teamepicrouter.test" from the client 172.31.250.14, source port 58961
+(an ephemeral port chosen by the client), to our DNS server 172.31.250.11 on UDP port 53.
+**Response:** from 172.31.250.11:53 back to 172.31.250.14:58961, flags show a response with no error;
+ANSWER: app.teamepicrouter.test A 172.31.250.12, TTL 30 s. 172.31.250.12 is the edge (node-2), so the client will connect
+there next. The TTL tells the client it may cache this answer for 30 seconds.
+
+### C2 – TCP three-way handshake (filter: `tcp.flags.syn==1`, then follow the stream) – Draft
+
+**SYN** from the client 172.31.250.14:38762 (ephemeral port) to 172.31.250.12:443 (HTTPS),
+initial sequence number 2346661895 (Wireshark shows it relative as Seq=0).
+**SYN-ACK** from 172.31.250.12:443: the server's own ISN 3867343306 and Ack=2346661896 (client ISN + 1, relative Ack=1).
+**ACK** from the client: Seq=1, Ack=1 – the connection is established before any TLS data is sent.
+The handshake gives a reliable, ordered, connection-oriented channel: both sides agree on starting
+sequence numbers so lost or out-of-order data can be detected and resent.
+
+### C3 – TLS handshake (filter: `tls`) – Draft
+
+Two requests were captured: one forced to TLS 1.2 (certificate visible) and one with TLS 1.3.
+**ClientHello** from 172.31.250.14 to 172.31.250.12:443 with SNI app.teamepicrouter.test, offering 28 cipher suites and
+TLS 1.3 / 1.2 as supported versions. **ServerHello** from 172.31.250.12 chooses TLS_AES_256_GCM_SHA384.
+In the TLS 1.2 handshake the **Certificate** message is readable: subject CN=app.teamepicrouter.test,
+SAN app.teamepicrouter.test and api.teamepicrouter.test, issued by "teamepicrouter Private CA". Then **ChangeCipherSpec** – from
+here on both sides encrypt. Everything after that is shown only as **Application Data** (12 records):
+the HTTP method, path, headers and JSON body are inside encrypted TLS records, so Wireshark cannot
+read them without the session keys. (In TLS 1.3 even the certificate is already encrypted.)
+
+## D1 – curl -sI https://app.teamepicrouter.test/api/status

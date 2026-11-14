@@ -1,0 +1,11 @@
+512342beaca06793f8cdbb56f10ff6b179e9c05f873ec1ddde898e30a3dfffc2  ./PUSH-PROMPT.md
+0e837dc8feaa3703ce0838bccfbe49c33e671a941a4c9e21ffd1240c46546a6e  ./README.md
+31b63f1b723f9ca9b7d2700c0880103cf16bc69f82e90988dd31c21f29525509  ./backend-b.service
+62fc3e9163acbb78e4e70de0bf487cf1ca12f9b81334a5ba596042762bca70d8  ./backend.py
+74b386fa250402ed2bf2dc9a1f1a67c7560d00753e45fdc742c6ac2f61008085  ./cn-capture
+b24333f111cad9e60a3817ec2e753f1fd53d3736e9ff4fe72a8a25ba5920e47f  ./cn-resolver
+e703da649f8b5a1a8d926587c916b28a4466e2faf2c983c76d6d26c88f9ec874  ./evidence/caching-headers.txt
+88a953693b37f8668a5087d374938c284f68d4abbbedabf6e01eeed5c7965d02  ./evidence/client-dns-tcp-tls.pcap
+3a0f7ea4b57cacb4a9df074efad050d749b397691619ee3c18b416d6fb712668  ./evidence/inventory.md
+f49154ef937e6780c609573cb92ff732eee7145a1ec38be9089727f64784fcf2  ./evidence/node-4-topology.txt
+ad44e447a0877946f887dd19805ebddd162450ee9aa7dfbfd677f10ab9fa09b1  ./evidence/packet-capture.txt

@@ -1,0 +1,40 @@
+## D1 – curl -sI https://app.teamepicrouter.test/api/status
+
+```
+ubuntu@node-4:~$ curl -sI https://app.teamepicrouter.test/api/status
+HTTP/2 200 
+server: nginx/1.24.0 (Ubuntu)
+date: Sun, 04 Oct 2026 19:05:47 GMT
+content-type: application/json
+content-length: 144
+x-backend: A
+cache-control: public, max-age=60
+etag: "8a61090ad99a2fda"
+x-edge: node-2
+
+```
+
+Conditional request with the ETag (bonus – 304 Not Modified), on the endpoint that both backends serve identically:
+
+```
+ubuntu@node-4:~$ E=$(curl -sI https://app.teamepicrouter.test/api/cached | awk 'tolower($1)=="etag:"{print $2}' | tr -d '\r'); curl -sI -H "If-None-Match: $E" https://app.teamepicrouter.test/api/cached
+HTTP/2 304 
+server: nginx/1.24.0 (Ubuntu)
+date: Sun, 04 Oct 2026 19:05:47 GMT
+x-backend: A
+cache-control: public, max-age=60
+etag: "51a88c5171cc61e2"
+x-edge: node-2
+
+```
+
+## D2 – What Cache-Control tells the client – Draft
+
+`Cache-Control: public, max-age=60` means the response may be stored by the browser (and any
+shared cache) and reused for 60 seconds without asking the server again. Within those 60 s the
+client answers from its own copy and sends nothing. After 60 s the copy is stale: the client
+revalidates by sending the ETag in an `If-None-Match` header. If the content has not changed the
+server replies **304 Not Modified** with no body and the client keeps using its copy for another
+60 s; if it changed, the server sends 200 with the new body and a new ETag.
+
+## D3 – Failure demonstration: Option A, stop one backend
