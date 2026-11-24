@@ -3,25 +3,25 @@
 ```
 ubuntu@node-4:~$ dig @8.8.8.8 app.teamepicrouter.test
 
-; <<>> DiG 9.18.39-0ubuntu0.24.04.7-Ubuntu <<>> @8.8.8.8 app.teamepicrouter.test
+; <<>> DiG 9.18.39-0ubuntu0.24.04.9-Ubuntu <<>> @8.8.8.8 app.teamepicrouter.test
 ; (1 server found)
 ;; global options: +cmd
 ;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 59000
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 5142
 ;; flags: qr rd ra ad; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
 ; EDNS: version: 0, flags:; udp: 512
 ;; QUESTION SECTION:
-;app.teamepicrouter.test.			IN	A
+;app.teamepicrouter.test.	IN	A
 
 ;; AUTHORITY SECTION:
-.			86109	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 2026100401 1800 900 604800 86400
+.			86381	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 2026112400 1800 900 604800 86400
 
-;; Query time: 2 msec
+;; Query time: 3 msec
 ;; SERVER: 8.8.8.8#53(8.8.8.8) (UDP)
-;; WHEN: Sun Oct 04 19:04:44 UTC 2026
-;; MSG SIZE  rcvd: 118
+;; WHEN: Tue Nov 24 08:05:17 UTC 2026
+;; MSG SIZE  rcvd: 127
 
 ```
 

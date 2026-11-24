@@ -1,0 +1,18 @@
+node-4 (backend B + client):~$ cn-info; cn_done 1336048 $?
+machine       node-4  (Mac 4 - Backend B :3002 + test client)
+interface     ens5
+ipv4/prefix   172.31.250.14/24
+subnet mask   255.255.255.0
+gateway       172.31.250.1
+mac address   0a:ff:fc:16:60:79
+dns servers   172.31.250.11  (/etc/resolv.conf)
+listening on:
+  tcp  0.0.0.0:3002           python3
+  tcp  127.0.0.53%lo:53       systemd-resolve
+  tcp  127.0.0.54:53          systemd-resolve
+  udp  127.0.0.53%lo:53       systemd-resolve
+  udp  127.0.0.54:53          systemd-resolve
+-- done #1336048 (exit 0) --
+node-4 (backend B + client):~$ true; cn_done 13360412 $?
+-- done #13360412 (exit 0) --
+node-4 (backend B + client):~$ 

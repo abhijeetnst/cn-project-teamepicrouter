@@ -3,3 +3,7 @@ time	scene	check	result
 2026-10-05 00:30:32	topology	node-2 has its fixed LAN address 172.31.250.12	PASS
 2026-10-05 00:30:32	topology	node-3 has its fixed LAN address 172.31.250.13	PASS
 2026-10-05 00:30:33	topology	node-4 has its fixed LAN address 172.31.250.14	PASS
+2026-11-24 13:36:48	topology	node-1 has its fixed LAN address 172.31.250.11	PASS
+2026-11-24 13:36:48	topology	node-2 has its fixed LAN address 172.31.250.12	PASS
+2026-11-24 13:36:49	topology	node-3 has its fixed LAN address 172.31.250.13	PASS
+2026-11-24 13:36:49	topology	node-4 has its fixed LAN address 172.31.250.14	PASS
