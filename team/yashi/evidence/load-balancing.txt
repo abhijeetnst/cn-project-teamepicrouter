@@ -1,0 +1,73 @@
+## B2 – Load balancing: 6 consecutive requests
+
+```
+ubuntu@node-4:~$ for i in {1..6}; do curl -s https://app.teamepicrouter.test/api/status; echo; done
+{
+  "backend": "A",
+  "status": "ok",
+  "host": "node-3",
+  "port": 3001,
+  "tcp_peer": "172.31.250.12",
+  "x_forwarded_for": "172.31.250.14"
+}
+
+{
+  "backend": "B",
+  "status": "ok",
+  "host": "node-4",
+  "port": 3002,
+  "tcp_peer": "172.31.250.12",
+  "x_forwarded_for": "172.31.250.14"
+}
+
+{
+  "backend": "A",
+  "status": "ok",
+  "host": "node-3",
+  "port": 3001,
+  "tcp_peer": "172.31.250.12",
+  "x_forwarded_for": "172.31.250.14"
+}
+
+{
+  "backend": "B",
+  "status": "ok",
+  "host": "node-4",
+  "port": 3002,
+  "tcp_peer": "172.31.250.12",
+  "x_forwarded_for": "172.31.250.14"
+}
+
+{
+  "backend": "A",
+  "status": "ok",
+  "host": "node-3",
+  "port": 3001,
+  "tcp_peer": "172.31.250.12",
+  "x_forwarded_for": "172.31.250.14"
+}
+
+{
+  "backend": "B",
+  "status": "ok",
+  "host": "node-4",
+  "port": 3002,
+  "tcp_peer": "172.31.250.12",
+  "x_forwarded_for": "172.31.250.14"
+}
+
+```
+
+The same 6 requests, showing only the X-Backend response header:
+
+```
+ubuntu@node-4:~$ for i in {1..6}; do curl -si https://app.teamepicrouter.test/api/status | grep -i '^x-backend'; done
+x-backend: A
+x-backend: B
+x-backend: A
+x-backend: B
+x-backend: A
+x-backend: B
+```
+
+## B3 – nginx configuration (node-2, /etc/nginx/conf.d/cn-edge.conf)
