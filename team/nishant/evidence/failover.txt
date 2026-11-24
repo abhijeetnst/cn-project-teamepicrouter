@@ -4,12 +4,12 @@
 
 ```
 ubuntu@node-4:~$ for i in {1..6}; do curl -s -o /dev/null -w '%{http_code} X-Backend: %header{x-backend}\n' https://app.teamepicrouter.test/api/status; done
-200 X-Backend: B
 200 X-Backend: A
 200 X-Backend: B
 200 X-Backend: A
 200 X-Backend: B
 200 X-Backend: A
+200 X-Backend: B
 ```
 
 **Action** – stop Backend A on node-3:
@@ -36,7 +36,29 @@ What the edge saw (node-2 error log):
 
 ```
 ubuntu@node-2:~$ sudo grep -E 'refused|failed' /var/log/nginx/cn-edge-error.log | grep 3001 | tail -2
-2026/10/04 19:05:49 [error] 3539#3539: *181 connect() failed (111: Connection refused) while connecting to upstream, client: 172.31.250.14, server: app.teamepicrouter.test, request: "GET /api/status HTTP/2.0", upstream: "http://172.31.250.13:3001/api/status", host: "app.teamepicrouter.test"
+2026/11/24 08:06:20 [error] 3449#3449: *101 connect() failed (111: Connection refused) while connecting to upstream, client: 172.31.250.14, server: app.teamepicrouter.test, request: "GET /api/status HTTP/2.0", upstream: "http://172.31.250.13:3001/api/status", host: "app.teamepicrouter.test"
 ```
 
 **(5) Restore** – start Backend A again; after nginx's fail_timeout (10 s) it is used again:
+
+```
+ubuntu@node-3:~$ sudo systemctl start backend-a; systemctl is-active backend-a
+active
+```
+
+```
+ubuntu@node-4:~$ for i in {1..6}; do curl -s -o /dev/null -w '%{http_code} X-Backend: %header{x-backend}\n' https://app.teamepicrouter.test/api/status; done
+200 X-Backend: B
+200 X-Backend: A
+200 X-Backend: B
+200 X-Backend: A
+200 X-Backend: B
+200 X-Backend: A
+```
+
+**(4) Layer – Draft:** the application layer behind the edge (Layer 7, Backend A's HTTP service; at
+Layer 4 its port 3001 now answers TCP connections with a reset). DNS, IP routing, TCP to the edge and
+TLS were all unaffected. nginx's connection to 172.31.250.13:3001 was refused, so it retried the request on
+Backend B (`proxy_next_upstream`) and marked A as down for 10 s (`max_fails=1 fail_timeout=10s`):
+the client saw no error. Restored with `systemctl start backend-a`; round-robin resumed.
+

@@ -21,7 +21,7 @@ ubuntu@node-4:~$ curl -v https://app.teamepicrouter.test
 * TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
 { [19 bytes data]
 * TLSv1.3 (IN), TLS handshake, Certificate (11):
-{ [878 bytes data]
+{ [915 bytes data]
 * TLSv1.3 (IN), TLS handshake, CERT verify (15):
 { [264 bytes data]
 * TLSv1.3 (IN), TLS handshake, Finished (20):
@@ -34,8 +34,8 @@ ubuntu@node-4:~$ curl -v https://app.teamepicrouter.test
 * ALPN: server accepted h2
 * Server certificate:
 *  subject: CN=app.teamepicrouter.test
-*  start date: Oct  4 18:53:32 2026 GMT
-*  expire date: Nov  5 18:53:32 2027 GMT
+*  start date: Nov 24 08:03:56 2026 GMT
+*  expire date: Dec 26 08:03:56 2027 GMT
 *  subjectAltName: host "app.teamepicrouter.test" matched cert's "app.teamepicrouter.test"
 *  issuer: CN=teamepicrouter Private CA
 *  SSL certificate verify ok.
@@ -58,10 +58,12 @@ ubuntu@node-4:~$ curl -v https://app.teamepicrouter.test
 > 
 { [5 bytes data]
 * TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
-{ [265 bytes data]
+{ [281 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [281 bytes data]
 {
   "service": "cn-project",
-  "backend": "B",
+  "backend": "A",
   "status": "running",
   "endpoints": [
     "/",
@@ -69,21 +71,19 @@ ubuntu@node-4:~$ curl -v https://app.teamepicrouter.test
     "/api/cached"
   ]
 }
-* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
-{ [265 bytes data]
 * old SSL session ID is stale, removing
 { [5 bytes data]
 < HTTP/2 200 
 < server: nginx/1.24.0 (Ubuntu)
-< date: Sun, 04 Oct 2026 19:05:24 GMT
+< date: Tue, 24 Nov 2026 08:05:57 GMT
 < content-type: application/json
 < content-length: 139
-< x-backend: B
+< x-backend: A
 < cache-control: no-store
 < x-edge: node-2
 < 
 { [139 bytes data]
-100   139  100   139    0     0   3571      0 --:--:-- --:--:-- --:--:--  3657
+100   139  100   139    0     0   2667      0 --:--:-- --:--:-- --:--:--  2725
 * Connection #0 to host app.teamepicrouter.test left intact
 ```
 

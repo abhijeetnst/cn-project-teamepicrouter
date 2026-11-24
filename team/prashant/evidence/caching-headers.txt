@@ -4,12 +4,12 @@
 ubuntu@node-4:~$ curl -sI https://app.teamepicrouter.test/api/status
 HTTP/2 200 
 server: nginx/1.24.0 (Ubuntu)
-date: Sun, 04 Oct 2026 19:05:47 GMT
+date: Tue, 24 Nov 2026 08:06:18 GMT
 content-type: application/json
 content-length: 144
-x-backend: A
+x-backend: B
 cache-control: public, max-age=60
-etag: "8a61090ad99a2fda"
+etag: "b61b6ce095c5e993"
 x-edge: node-2
 
 ```
@@ -20,8 +20,8 @@ Conditional request with the ETag (bonus – 304 Not Modified), on the endpoint 
 ubuntu@node-4:~$ E=$(curl -sI https://app.teamepicrouter.test/api/cached | awk 'tolower($1)=="etag:"{print $2}' | tr -d '\r'); curl -sI -H "If-None-Match: $E" https://app.teamepicrouter.test/api/cached
 HTTP/2 304 
 server: nginx/1.24.0 (Ubuntu)
-date: Sun, 04 Oct 2026 19:05:47 GMT
-x-backend: A
+date: Tue, 24 Nov 2026 08:06:18 GMT
+x-backend: B
 cache-control: public, max-age=60
 etag: "51a88c5171cc61e2"
 x-edge: node-2
