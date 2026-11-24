@@ -2,29 +2,29 @@
 
 ```
 ubuntu@node-1:~$ cn-pingall
-node-1 -> node-2  ping 172.31.250.12 OK     4 packets transmitted, 4 received, 0% packet loss, time 3068ms
+node-1 -> node-2  ping 172.31.250.12 OK     4 packets transmitted, 4 received, 0% packet loss, time 3061ms
 node-1 -> node-3  ping 172.31.250.13 OK     4 packets transmitted, 4 received, 0% packet loss, time 3066ms
 node-1 -> node-4  ping 172.31.250.14 OK     4 packets transmitted, 4 received, 0% packet loss, time 3066ms
 ```
 
 ```
 ubuntu@node-2:~$ cn-pingall
-node-2 -> node-1  ping 172.31.250.11 OK     4 packets transmitted, 4 received, 0% packet loss, time 3111ms
-node-2 -> node-3  ping 172.31.250.13 OK     4 packets transmitted, 4 received, 0% packet loss, time 3065ms
-node-2 -> node-4  ping 172.31.250.14 OK     4 packets transmitted, 4 received, 0% packet loss, time 3023ms
+node-2 -> node-1  ping 172.31.250.11 OK     4 packets transmitted, 4 received, 0% packet loss, time 3103ms
+node-2 -> node-3  ping 172.31.250.13 OK     4 packets transmitted, 4 received, 0% packet loss, time 3067ms
+node-2 -> node-4  ping 172.31.250.14 OK     4 packets transmitted, 4 received, 0% packet loss, time 3067ms
 ```
 
 ```
 ubuntu@node-3:~$ cn-pingall
-node-3 -> node-1  ping 172.31.250.11 OK     4 packets transmitted, 4 received, 0% packet loss, time 3098ms
+node-3 -> node-1  ping 172.31.250.11 OK     4 packets transmitted, 4 received, 0% packet loss, time 3081ms
 node-3 -> node-2  ping 172.31.250.12 OK     4 packets transmitted, 4 received, 0% packet loss, time 3067ms
 node-3 -> node-4  ping 172.31.250.14 OK     4 packets transmitted, 4 received, 0% packet loss, time 3067ms
 ```
 
 ```
 ubuntu@node-4:~$ cn-pingall
-node-4 -> node-1  ping 172.31.250.11 OK     4 packets transmitted, 4 received, 0% packet loss, time 3076ms
-node-4 -> node-2  ping 172.31.250.12 OK     4 packets transmitted, 4 received, 0% packet loss, time 3066ms
+node-4 -> node-1  ping 172.31.250.11 OK     4 packets transmitted, 4 received, 0% packet loss, time 3055ms
+node-4 -> node-2  ping 172.31.250.12 OK     4 packets transmitted, 4 received, 0% packet loss, time 3065ms
 node-4 -> node-3  ping 172.31.250.13 OK     4 packets transmitted, 4 received, 0% packet loss, time 3066ms
 ```
 
